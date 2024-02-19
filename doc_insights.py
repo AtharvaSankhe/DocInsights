@@ -4,7 +4,6 @@ from langchain.text_splitter import RecursiveCharacterTextSplitter
 import os
 from langchain_google_genai import GoogleGenerativeAIEmbeddings
 import google.generativeai as genai
-# from langchain.vectorstores import FAISS
 from langchain_google_genai import ChatGoogleGenerativeAI
 from langchain.chains.question_answering import load_qa_chain
 from langchain.prompts import PromptTemplate
@@ -81,25 +80,56 @@ def user_input(user_question):
 
 
 
+# def main():
+#     st.set_page_config("Chat PDF")
+#     st.header("Chat with PDF using Gemini💁")
+
+#     user_question = st.text_input("Ask a Question from the PDF Files")
+
+#     if user_question:
+#         user_input(user_question)
+
+#     with st.sidebar:
+#         st.title("Menu:")
+#         pdf_docs = st.file_uploader("Upload your PDF Files and Click on the Submit & Process Button", accept_multiple_files=True)
+#         if st.button("Submit & Process"):
+#             with st.spinner("Processing..."):
+#                 raw_text = get_pdf_text(pdf_docs)
+#                 text_chunks = get_text_chunks(raw_text)
+#                 get_vector_store(text_chunks)
+#                 st.success("Done")
+
+
 def main():
-    st.set_page_config("Chat PDF")
-    st.header("Chat with PDF using Gemini💁")
+    st.set_page_config(page_title="Chat PDF with Gemini", page_icon="💁", layout="wide")
 
-    user_question = st.text_input("Ask a Question from the PDF Files")
+    st.title("Chat with PDF using Gemini💁")
+    st.markdown("Welcome to the Gemini PDF Chat! Here you can upload PDF files and ask questions based on their content.")
 
-    if user_question:
-        user_input(user_question)
+    col1, col2 = st.columns(2)
 
-    with st.sidebar:
-        st.title("Menu:")
-        pdf_docs = st.file_uploader("Upload your PDF Files and Click on the Submit & Process Button", accept_multiple_files=True)
-        if st.button("Submit & Process"):
+    with col1:
+        st.header("Ask a Question")
+        user_question = st.text_input("Enter your question here")
+
+        if user_question:
+            with st.spinner('Processing your question...'):
+                user_input(user_question)
+                st.success("Question processed!")
+
+    with col2:
+        st.header("Upload PDF Files")
+        pdf_docs = st.file_uploader("Select PDF files from your directory", type=['pdf'], accept_multiple_files=True)
+
+        if pdf_docs:
             with st.spinner("Processing..."):
                 raw_text = get_pdf_text(pdf_docs)
                 text_chunks = get_text_chunks(raw_text)
                 get_vector_store(text_chunks)
-                st.success("Done")
+                st.success("PDF processed!")
 
+    st.sidebar.title("Menu:")
+    st.sidebar.markdown("Here you can upload your PDF files and ask questions based on their content. The 'Submit & Process' button will process the uploaded PDFs and prepare them for questioning.")
 
 
 if __name__ == "__main__":
